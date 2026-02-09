@@ -4,151 +4,297 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>For Bettaa 💘</title>
-
   <style>
+    :root{
+      --bg1:#fff0f6; --bg2:#ffe4ef; --card:rgba(255,255,255,.78);
+      --text:#2a2a2a; --accent:#ff2e74; --accent2:#7c3aed;
+      --shadow:0 16px 40px rgba(0,0,0,.12); --radius:22px;
+    }
+    *{box-sizing:border-box}
     body{
-      margin:0;
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(135deg,#fff0f6,#ffe4ef);
-      color:#2a2a2a;
-      padding:24px;
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      padding:24px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, #fff 0 14%, transparent 15%),
+        radial-gradient(circle at 85% 25%, #fff 0 12%, transparent 13%),
+        radial-gradient(circle at 35% 88%, #fff 0 10%, transparent 11%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
     }
+    .wrap{width:min(820px,100%)}
     .card{
-      width:min(800px,100%);
-      background:rgba(255,255,255,.85);
-      border-radius:22px;
-      padding:28px;
-      box-shadow:0 16px 40px rgba(0,0,0,.15);
-      text-align:center;
-    }
-    h1{margin-bottom:10px}
-    p{line-height:1.6}
-    button{
-      border:0;
-      padding:12px 18px;
-      border-radius:16px;
-      font-weight:800;
-      cursor:pointer;
-      margin:8px;
-    }
-    .yes{
-      background:linear-gradient(135deg,#ff2e74,#ff6aa1);
-      color:white;
-    }
-    .no{
-      background:#ece7ff;
-      color:#4b2a9b;
-      position:absolute;
-    }
-
-    /* Valentine arena */
-    .arena{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.6);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:26px;
+      backdrop-filter:blur(10px);
       position:relative;
-      height:420px;
-      margin-top:24px;
-      border-radius:18px;
-      background:rgba(255,255,255,.6);
       overflow:hidden;
     }
-
-    iframe{
-      width:100%;
-      height:450px;
-      border-radius:18px;
-      border:0;
-      box-shadow:0 14px 30px rgba(0,0,0,.25);
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px; border-radius:999px;
+      background:rgba(255,46,116,.12); color:#7a0f35;
+      font-weight:700; font-size:14px;
+      margin-bottom:14px;
     }
+    h1{margin:0 0 10px; letter-spacing:.2px}
+    p{margin:8px 0 0; line-height:1.55}
+    .big{font-size:clamp(30px,4.2vw,48px); margin:10px 0 8px}
+    .center{text-align:center}
+    .row{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
+    .row.centered{justify-content:center}
+    button{
+      border:0; cursor:pointer; font-weight:800;
+      padding:12px 16px; border-radius:16px;
+      transition:transform .06s ease, filter .2s ease;
+      box-shadow:0 10px 20px rgba(0,0,0,.12);
+      user-select:none;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:linear-gradient(135deg,var(--accent),#ff6aa1);
+      color:#fff;
+    }
+    .secondary{
+      background:rgba(124,58,237,.10);
+      color:#4b2a9b;
+      box-shadow:none;
+      border:1px solid rgba(124,58,237,.22);
+    }
+
+    /* Valentine stage "arena" for the runaway button */
+    .arena{
+      position:relative;
+      height:280px;
+      margin-top:18px;
+      border-radius:18px;
+      background:rgba(255,255,255,.55);
+      border:1px solid rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .arena .hint{
+      position:absolute; left:14px; top:12px;
+      font-size:13px; opacity:.75;
+      font-weight:650;
+    }
+    #noBtn{
+      position:absolute; /* important for runaway */
+      left:52%;
+      top:62%;
+      transform:translate(-50%,-50%);
+      white-space:nowrap;
+    }
+    #yesBtn{
+      position:absolute;
+      left:50%;
+      top:38%;
+      transform:translate(-50%,-50%);
+      white-space:nowrap;
+    }
+
+    .heart{
+      font-size:44px;
+      filter:drop-shadow(0 10px 14px rgba(255,46,116,.25));
+      animation:floaty 2.4s ease-in-out infinite;
+    }
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    .confetti{
+      position:fixed; inset:0; pointer-events:none; display:none; overflow:hidden;
+    }
+    .confetti i{
+      position:absolute; top:-12px; width:10px; height:14px;
+      border-radius:3px; opacity:.95;
+      animation:fall 1.5s linear forwards;
+    }
+    @keyframes fall { to { transform:translateY(110vh) rotate(720deg); } }
+
+    footer{margin-top:14px; font-size:12px; opacity:.65; text-align:center}
   </style>
 </head>
 
 <body>
-  <div class="card" id="app"></div>
+  <div class="wrap">
+    <div class="card" id="app"></div>
+    <footer>Made with sincerity 🏃‍♂️💘</footer>
+  </div>
+  <div class="confetti" id="confetti"></div>
 
-<script>
-const NAME = "Bettaa";
-const VIDEO_ID = "UCzPIMFn9jk"; // 👈 replace this
+  <script>
+    const NAME = "Bettaa";
+    const YEARS = 10; // tweak if you want
 
-const app = document.getElementById("app");
+    const app = document.getElementById("app");
+    const confetti = document.getElementById("confetti");
 
-/* ---------- Pages ---------- */
-
-function welcomePage(){
-  app.innerHTML = `
-    <h1>Hi, ${NAME} 🌙</h1>
-    <p>
-      I’ve known you for almost <b>${YEARS} years</b>, and somehow you still manage to be my favorite
+    function welcomeView(){
+      app.innerHTML = `
+        <div class="pill">🌸 Welcome</div>
+        <div class="center">
+          <div class="heart">💗</div>
+          <h1 class="big">Hi, ${NAME}.</h1>
+          <p>
+            I’ve known you for almost <b>${YEARS} years</b>, and somehow you still manage to be my favorite
             part of the timeline.
           </p>
           <p>
             This is a small page with a big question, steeped like good tea and lit softly by the moon.
+</p>
 <p>
   I know you love tea and adore the moon, so I tried to make this feel like both.
+</p>
 
-      You love tea, adore the moon,<br>
-      and somehow still surprise me.
-    </p>
-    <button class="yes" onclick="questionPage()">Continue 💗</button>
-  `;
-}
+          </p>
+          <div class="row centered">
+            <button class="primary" onclick="valentineView()">Continue 💞</button>
+          </div>
+        </div>
+      `;
+    }
 
-function questionPage(){
-  app.innerHTML = `
-    <h1>Will you be my Valentine, ${NAME}?</h1>
-    <p>(The “No” button may panic.)</p>
+    function valentineView(){
+      app.innerHTML = `
+        <div class="pill">💘 The Question</div>
+        <div class="center">
+          <h1 class="big">Will you be my Valentine, ${NAME}?</h1>
+          <p>(Careful. The “No” button has… commitment issues.)</p>
+        </div>
 
-    <div class="arena" id="arena">
-      <button class="yes" id="yesBtn">Yes 💖</button>
-      <button class="no" id="noBtn">No 🙈</button>
-    </div>
-  `;
+        <div class="arena" id="arena">
+          <div class="hint">Move your mouse near “No”… if you can 😄</div>
+          <button class="primary" id="yesBtn">Yes 💖</button>
+          <button class="secondary" id="noBtn">No 🙈</button>
+        </div>
 
-  const arena = document.getElementById("arena");
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
+        <p class="center" id="msg" style="margin-top:14px; font-weight:800;"></p>
+        <div class="row centered">
+          <button class="secondary" onclick="welcomeView()">Back</button>
+          <button class="secondary" onclick="resetNoButton()">Reset “No”</button>
+        </div>
+      `;
 
-  // Initial positions
-  yesBtn.style.position = "absolute";
-  yesBtn.style.left = "50%";
-  yesBtn.style.top = "30%";
-  yesBtn.style.transform = "translate(-50%,-50%)";
+      const arena = document.getElementById("arena");
+      const noBtn = document.getElementById("noBtn");
+      const yesBtn = document.getElementById("yesBtn");
+      const msg = document.getElementById("msg");
 
-  moveNo();
+      // Place "No" safely inside the arena bounds
+      function placeNo(x, y){
+        const pad = 10;
+        const a = arena.getBoundingClientRect();
+        const b = noBtn.getBoundingClientRect();
 
-  function moveNo(){
-    const pad = 10;
-    const x = Math.random() * (arena.clientWidth - noBtn.offsetWidth - pad);
-    const y = Math.random() * (arena.clientHeight - noBtn.offsetHeight - pad);
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  }
+        // Clamp within arena (accounting for button size)
+        const minX = pad;
+        const minY = pad;
+        const maxX = a.width - b.width - pad;
+        const maxY = a.height - b.height - pad;
 
-  arena.addEventListener("mousemove", () => moveNo());
-  arena.addEventListener("touchstart", () => moveNo(), {passive:true});
+        const cx = Math.max(minX, Math.min(x, maxX));
+        const cy = Math.max(minY, Math.min(y, maxY));
 
-  yesBtn.onclick = videoPage;
-}
+        noBtn.style.left = cx + "px";
+        noBtn.style.top  = cy + "px";
+        noBtn.style.transform = "translate(0,0)";
+      }
 
-function videoPage(){
-  app.innerHTML = `
-    <h1>🍵🌙</h1>
-    <p>Tea for two. The moon knows. PLEASE DON'T BLOCK ME🙃.</p>
+      // Initial placement
+      // (we wait a tick so layout sizes are correct)
+      setTimeout(() => {
+        placeNo(arena.clientWidth * 0.58, arena.clientHeight * 0.62);
+      }, 0);
 
-    <iframe
-      src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
-  `;
-}
+      // Runaway behavior
+      function runAway(mouseX, mouseY){
+        const a = arena.getBoundingClientRect();
+        const b = noBtn.getBoundingClientRect();
 
-/* ---------- Start ---------- */
-welcomePage();
-</script>
+        // Mouse position relative to arena
+        const mx = mouseX - a.left;
+        const my = mouseY - a.top;
+
+        // Button center relative to arena
+        const bx = (b.left - a.left) + b.width / 2;
+        const by = (b.top  - a.top)  + b.height / 2;
+
+        const dx = bx - mx;
+        const dy = by - my;
+        const dist = Math.hypot(dx, dy);
+
+        // Trigger distance (how close the mouse needs to be)
+        const trigger = 120;
+
+        if (dist < trigger){
+          // Move in the opposite direction, plus some chaos
+          const push = (trigger - dist) * 1.4;
+          const ux = dx / (dist || 1);
+          const uy = dy / (dist || 1);
+
+          // New target position (top-left corner positioning)
+          const currentLeft = parseFloat(noBtn.style.left) || (arena.clientWidth * 0.6);
+          const currentTop  = parseFloat(noBtn.style.top)  || (arena.clientHeight * 0.6);
+
+          const jitter = 30;
+          const nx = currentLeft + ux * push + (Math.random() * jitter - jitter/2);
+          const ny = currentTop  + uy * push + (Math.random() * jitter - jitter/2);
+
+          placeNo(nx, ny);
+        }
+      }
+
+      // Move when mouse approaches
+      arena.addEventListener("mousemove", (e) => runAway(e.clientX, e.clientY));
+      // Also move on touch (mobile)
+      arena.addEventListener("touchstart", (e) => {
+        const t = e.touches[0];
+        runAway(t.clientX, t.clientY);
+      }, {passive:true});
+      arena.addEventListener("touchmove", (e) => {
+        const t = e.touches[0];
+        runAway(t.clientX, t.clientY);
+      }, {passive:true});
+
+      yesBtn.addEventListener("click", () => {
+	msg.textContent = "YES?! 💗 Then it’s official: tea for two, and a moon to witness it. 🍵🌙";
+	popConfetti();
+      });
+
+      noBtn.addEventListener("click", () => {
+        // If they manage to click it, reward the skill 😄
+        msg.textContent = "You clicked NO?! Respect. Olympic-level precision. But… are you sure? 😅";
+      });
+
+      window.resetNoButton = () => {
+        msg.textContent = "";
+        hideConfetti();
+        placeNo(arena.clientWidth * 0.58, arena.clientHeight * 0.62);
+      };
+    }
+
+    function popConfetti(){
+      confetti.style.display = "block";
+      confetti.innerHTML = "";
+      for(let i=0;i<140;i++){
+        const p = document.createElement("i");
+        p.style.left = (Math.random()*100) + "vw";
+        p.style.animationDelay = (Math.random()*0.6) + "s";
+        p.style.transform = `rotate(${Math.random()*360}deg)`;
+        p.style.background = `hsl(${Math.random()*360}, 90%, 60%)`;
+        p.style.width = (6 + Math.random()*10) + "px";
+        p.style.height = (8 + Math.random()*16) + "px";
+        confetti.appendChild(p);
+      }
+      setTimeout(hideConfetti, 1800);
+    }
+    function hideConfetti(){
+      confetti.style.display = "none";
+      confetti.innerHTML = "";
+    }
+
+    // Start
+    welcomeView();
+  </script>
 </body>
 </html>
-
-
-
