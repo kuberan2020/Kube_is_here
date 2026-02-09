@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>For Bettaa 💘</title>
+
   <style>
     :root{
       --bg1:#fff0f6; --bg2:#ffe4ef; --card:rgba(255,255,255,.78);
@@ -21,7 +22,7 @@
         radial-gradient(circle at 35% 88%, #fff 0 10%, transparent 11%),
         linear-gradient(135deg,var(--bg1),var(--bg2));
     }
-    .wrap{width:min(820px,100%)}
+    .wrap{width:min(900px,100%)}
     .card{
       background:var(--card);
       border:1px solid rgba(255,255,255,.6);
@@ -52,6 +53,7 @@
       box-shadow:0 10px 20px rgba(0,0,0,.12);
       user-select:none;
     }
+    button:hover{filter:brightness(1.03)}
     button:active{transform:translateY(1px)}
     .primary{
       background:linear-gradient(135deg,var(--accent),#ff6aa1);
@@ -64,12 +66,20 @@
       border:1px solid rgba(124,58,237,.22);
     }
 
-    /* Valentine stage "arena" for the runaway button */
+    /* ❤️ Floating moon-heart */
+    .heart{
+      font-size:44px;
+      filter:drop-shadow(0 10px 14px rgba(255,46,116,.25));
+      animation:floaty 2.4s ease-in-out infinite;
+    }
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    /* 🎯 Bigger Yes/No arena */
     .arena{
       position:relative;
-      height:280px;
-      margin-top:18px;
-      border-radius:18px;
+      height:420px;          /* bigger playground */
+      margin-top:22px;
+      border-radius:22px;
       background:rgba(255,255,255,.55);
       border:1px solid rgba(0,0,0,.06);
       overflow:hidden;
@@ -80,27 +90,53 @@
       font-weight:650;
     }
     #noBtn{
-      position:absolute; /* important for runaway */
-      left:52%;
-      top:62%;
+      position:absolute;
+      left:60%;
+      top:70%;
       transform:translate(-50%,-50%);
       white-space:nowrap;
     }
     #yesBtn{
       position:absolute;
       left:50%;
-      top:38%;
+      top:30%;
       transform:translate(-50%,-50%);
       white-space:nowrap;
     }
 
-    .heart{
-      font-size:44px;
-      filter:drop-shadow(0 10px 14px rgba(255,46,116,.25));
-      animation:floaty 2.4s ease-in-out infinite;
+    /* 🌙 Moon glow behind video */
+    .moon-glow{
+      position:relative;
+      margin-top:18px;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 18px 36px rgba(0,0,0,.28);
     }
-    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    .moon-glow::before{
+      content:"";
+      position:absolute;
+      inset:-30px;
+      background:
+        radial-gradient(circle at 50% 40%,
+          rgba(220,230,255,0.55),
+          rgba(180,200,255,0.25) 40%,
+          rgba(120,140,255,0.10) 60%,
+          transparent 72%);
+      filter:blur(22px);
+      z-index:0;
+      pointer-events:none;
+    }
+    .moon-glow .video-frame{
+      position:relative;
+      z-index:1;
+      width:100%;
+      aspect-ratio:16/9;
+      border-radius:18px;
+      overflow:hidden;
+      background:#000;
+    }
 
+    /* 🎉 Confetti */
     .confetti{
       position:fixed; inset:0; pointer-events:none; display:none; overflow:hidden;
     }
@@ -118,22 +154,23 @@
 <body>
   <div class="wrap">
     <div class="card" id="app"></div>
-    <footer>Made with sincerity 🏃‍♂️💘</footer>
+    <footer>Made with tea thoughts 🍵 and moonlight 🌙</footer>
   </div>
+
   <div class="confetti" id="confetti"></div>
 
   <script>
+    // ✅ Personalize here
     const NAME = "Bettaa";
-    const YEARS = 10; // tweak if you want
-
-    const app = document.getElementById("app");
+    const YEARS = 10;                 // "almost 10 years"
+   
     const confetti = document.getElementById("confetti");
 
-    function welcomeView(){
+      function welcomeView(){
       app.innerHTML = `
         <div class="pill">🌸 Welcome</div>
         <div class="center">
-          <div class="heart">💗</div>
+          <div class="heart">🌙💗</div>
           <h1 class="big">Hi, ${NAME}.</h1>
           <p>
             I’ve known you for almost <b>${YEARS} years</b>, and somehow you still manage to be my favorite
@@ -141,17 +178,17 @@
           </p>
           <p>
             This is a small page with a big question, steeped like good tea and lit softly by the moon.
-</p>
-<p>
-  I know you love tea and adore the moon, so I tried to make this feel like both.
-</p>
-
+          </p>
+          <p>
+            I know you love tea and adore the moon, so I tried to make this feel like both. 🍵🌙
           </p>
           <div class="row centered">
             <button class="primary" onclick="valentineView()">Continue 💞</button>
           </div>
         </div>
       `;
+      hideConfetti();
+      cleanupPlayer();
     }
 
     function valentineView(){
@@ -168,7 +205,8 @@
           <button class="secondary" id="noBtn">No 🙈</button>
         </div>
 
-        <p class="center" id="msg" style="margin-top:14px; font-weight:800;"></p>
+        <div class="center" id="msg" style="margin-top:14px;"></div>
+
         <div class="row centered">
           <button class="secondary" onclick="welcomeView()">Back</button>
           <button class="secondary" onclick="resetNoButton()">Reset “No”</button>
@@ -180,13 +218,11 @@
       const yesBtn = document.getElementById("yesBtn");
       const msg = document.getElementById("msg");
 
-      // Place "No" safely inside the arena bounds
       function placeNo(x, y){
-        const pad = 10;
+        const pad = 12;
         const a = arena.getBoundingClientRect();
         const b = noBtn.getBoundingClientRect();
 
-        // Clamp within arena (accounting for button size)
         const minX = pad;
         const minY = pad;
         const maxX = a.width - b.width - pad;
@@ -200,22 +236,17 @@
         noBtn.style.transform = "translate(0,0)";
       }
 
-      // Initial placement
-      // (we wait a tick so layout sizes are correct)
       setTimeout(() => {
-        placeNo(arena.clientWidth * 0.58, arena.clientHeight * 0.62);
+        placeNo(arena.clientWidth * 0.62, arena.clientHeight * 0.72);
       }, 0);
 
-      // Runaway behavior
       function runAway(mouseX, mouseY){
         const a = arena.getBoundingClientRect();
         const b = noBtn.getBoundingClientRect();
 
-        // Mouse position relative to arena
         const mx = mouseX - a.left;
         const my = mouseY - a.top;
 
-        // Button center relative to arena
         const bx = (b.left - a.left) + b.width / 2;
         const by = (b.top  - a.top)  + b.height / 2;
 
@@ -223,20 +254,17 @@
         const dy = by - my;
         const dist = Math.hypot(dx, dy);
 
-        // Trigger distance (how close the mouse needs to be)
-        const trigger = 120;
+        const trigger = 140;
 
         if (dist < trigger){
-          // Move in the opposite direction, plus some chaos
-          const push = (trigger - dist) * 1.4;
+          const push = (trigger - dist) * 1.6;
           const ux = dx / (dist || 1);
           const uy = dy / (dist || 1);
 
-          // New target position (top-left corner positioning)
           const currentLeft = parseFloat(noBtn.style.left) || (arena.clientWidth * 0.6);
-          const currentTop  = parseFloat(noBtn.style.top)  || (arena.clientHeight * 0.6);
+          const currentTop  = parseFloat(noBtn.style.top)  || (arena.clientHeight * 0.7);
 
-          const jitter = 30;
+          const jitter = 34;
           const nx = currentLeft + ux * push + (Math.random() * jitter - jitter/2);
           const ny = currentTop  + uy * push + (Math.random() * jitter - jitter/2);
 
@@ -244,9 +272,7 @@
         }
       }
 
-      // Move when mouse approaches
       arena.addEventListener("mousemove", (e) => runAway(e.clientX, e.clientY));
-      // Also move on touch (mobile)
       arena.addEventListener("touchstart", (e) => {
         const t = e.touches[0];
         runAway(t.clientX, t.clientY);
@@ -256,23 +282,86 @@
         runAway(t.clientX, t.clientY);
       }, {passive:true});
 
+      window.resetNoButton = () => {
+        msg.innerHTML = "";
+        hideConfetti();
+        placeNo(arena.clientWidth * 0.62, arena.clientHeight * 0.72);
+      };
+
       yesBtn.addEventListener("click", () => {
-	msg.textContent = "YES?! 💗 Then it’s official: tea for two, and a moon to witness it. 🍵🌙";
-	popConfetti();
+        popConfetti();
+
+        msg.innerHTML = `
+          <p style="font-weight:900; font-size:18px; margin:0;">
+            YES?! 💗 Then it’s official: tea for two, and PLEASE Don't BLOCK ME🙃🌙.
+          </p>
+
+          <div class="moon-glow">
+          </div>
+        `;
+
+        loadYouTubePlayer();
       });
 
       noBtn.addEventListener("click", () => {
-        // If they manage to click it, reward the skill 😄
-        msg.textContent = "You clicked NO?! Respect. Olympic-level precision. But… are you sure? 😅";
+        msg.innerHTML = `
+          <p style="font-weight:900; margin:0;">
+            You clicked NO?! Respect. Olympic-level precision. But… are you sure? 😅
+          </p>
+        `;
       });
-
-      window.resetNoButton = () => {
-        msg.textContent = "";
-        hideConfetti();
-        placeNo(arena.clientWidth * 0.58, arena.clientHeight * 0.62);
-      };
     }
 
+    // 🎵 YouTube player with volume fade-in
+    function loadYouTubePlayer(){
+      cleanupPlayer();
+
+      // If YT not ready yet, try shortly
+      if (!window.YT || !YT.Player) {
+        setTimeout(loadYouTubePlayer, 150);
+        return;
+      }
+
+      ytPlayer = new YT.Player("ytPlayer", {
+        videoId: YT_VIDEO_ID,
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0
+        },
+        events: {
+          onReady: (event) => {
+            event.target.setVolume(0);
+            event.target.playVideo();
+
+            let volume = 0;
+            clearInterval(fadeInterval);
+
+            fadeInterval = setInterval(() => {
+              volume += 2;                // fade speed
+              event.target.setVolume(volume);
+
+              if (volume >= 60) {         // target volume
+                clearInterval(fadeInterval);
+              }
+            }, 120);
+          }
+        }
+      });
+    }
+
+    function cleanupPlayer(){
+      clearInterval(fadeInterval);
+      fadeInterval = null;
+
+      if (ytPlayer && typeof ytPlayer.destroy === "function") {
+        try { ytPlayer.destroy(); } catch (e) {}
+      }
+      ytPlayer = null;
+    }
+
+    // 🎉 Confetti
     function popConfetti(){
       confetti.style.display = "block";
       confetti.innerHTML = "";
@@ -288,6 +377,7 @@
       }
       setTimeout(hideConfetti, 1800);
     }
+
     function hideConfetti(){
       confetti.style.display = "none";
       confetti.innerHTML = "";
